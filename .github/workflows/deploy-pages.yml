@@ -30,7 +30,6 @@ jobs:
           version: 11.22.0
           runtime: node@24
           cache: true
-          require-lockfile: true
 
       - name: Build website
         run: pnpm build
@@ -46,4 +45,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-
