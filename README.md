@@ -8,6 +8,8 @@ The published activity is available at:
 
 **https://yurifrusin.github.io/induction-lab-pd-byte/**
 
+Classroom tracking is also available as an optional mode. Teachers can create short join codes and watch pseudonymous learner progress update in real time. See `CLASSROOM_SETUP.md` for the one-time Supabase configuration.
+
 ## Use it immediately
 
 Open `site/index.html` in a modern browser. For the most reliable clipboard and presentation behaviour, serve the folder locally instead:
@@ -47,6 +49,7 @@ These ideas were synthesised from the supplied deficient-chessboard/ordinary-ind
 - Dragging is also supported on desktop.
 - Keyboard users can activate discs and pegs with Enter or Space.
 - Undo, reset, disc-count selection, live legal-move feedback and an optimal next-move hint are included.
+- Optional classroom mode records stage, move count, hint count and conceptual responses for a live teacher dashboard.
 - Motion respects `prefers-reduced-motion`, and all core controls have visible focus states and accessible names.
 
 ## Safe, responsible and ethical LLM use

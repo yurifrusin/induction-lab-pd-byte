@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { findNextShortestMove, isComplete, makePegs, moveDisk, optimalMoves } from './game.js'
 import { AppHeader, DebriefScreen, NoticeScreen, PlayScreen, ProveScreen } from './Screens.jsx'
 
@@ -18,7 +18,7 @@ Safeguards:
 - Provide click, keyboard and touch alternatives, clear feedback and reduced-motion support.
 - Use the LLM as a design collaborator, not an automated assessor.`
 
-export default function App() {
+export default function App({ classroom = null, onLeaveClass = null, onOpenClassroom = null, onProgress = null }) {
   const [stage, setStage] = useState('play')
   const [teacherLens, setTeacherLens] = useState(false)
   const [discCount, setDiscCount] = useState(3)
@@ -30,10 +30,24 @@ export default function App() {
   const [noticeAnswer, setNoticeAnswer] = useState(null)
   const [proveAnswer, setProveAnswer] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [hintCount, setHintCount] = useState(0)
 
   const moveCount = history.length
   const target = optimalMoves(discCount)
   const completed = isComplete(pegs, discCount)
+
+  useEffect(() => {
+    if (!onProgress) return
+    onProgress({
+      stage,
+      disc_count: discCount,
+      move_count: moveCount,
+      hint_count: hintCount,
+      completed,
+      notice_answer: noticeAnswer,
+      prove_answer: proveAnswer,
+    })
+  }, [completed, discCount, hintCount, moveCount, noticeAnswer, onProgress, proveAnswer, stage])
 
   const resetGame = (nextCount = discCount) => {
     setDiscCount(nextCount)
@@ -43,6 +57,7 @@ export default function App() {
     setHintMove(null)
     setNoticeAnswer(null)
     setProveAnswer(null)
+    setHintCount(0)
     setMessage('Select the top disc, then choose a destination peg.')
   }
 
@@ -50,7 +65,7 @@ export default function App() {
     setStage(nextStage)
     setSelectedPeg(null)
     setHintMove(null)
-    if (nextStage === 'debrief') setTeacherLens(true)
+    if (nextStage === 'debrief' && !classroom) setTeacherLens(true)
   }
 
   const attemptMove = (from, to) => {
@@ -95,6 +110,7 @@ export default function App() {
       setMessage('The tower is already complete.')
       return
     }
+    setHintCount((current) => current + 1)
     setHintMove(hint)
     setMessage(`Try moving the top disc from peg ${'ABC'[hint.from]} to peg ${'ABC'[hint.to]}.`)
   }
@@ -121,6 +137,9 @@ export default function App() {
       <a className="skip-link" href="#main-content">Skip to activity</a>
       <AppHeader
         activeStage={stage}
+        classroom={classroom}
+        onLeaveClass={onLeaveClass}
+        onOpenClassroom={onOpenClassroom}
         onStageChange={changeStage}
         onTeacherLensChange={setTeacherLens}
         teacherLens={teacherLens}

@@ -21,6 +21,9 @@ const STAGES = [
 
 export function AppHeader({
   activeStage,
+  classroom,
+  onLeaveClass,
+  onOpenClassroom,
   onStageChange,
   onTeacherLensChange,
   teacherLens,
@@ -54,15 +57,26 @@ export function AppHeader({
         ))}
       </nav>
 
-      <label className="lens-toggle">
-        <span>Teacher lens</span>
-        <input
-          checked={teacherLens}
-          onChange={(event) => onTeacherLensChange(event.target.checked)}
-          type="checkbox"
-        />
-        <span className="toggle-track" aria-hidden="true"><span /></span>
-      </label>
+      {classroom ? (
+        <div className="class-status">
+          <span className={`sync-dot sync-${classroom.syncState}`} aria-hidden="true" />
+          <div><small>{classroom.code}</small><strong>{classroom.displayName}</strong></div>
+          <button onClick={onLeaveClass} type="button">Leave</button>
+        </div>
+      ) : (
+        <div className="header-actions">
+          {onOpenClassroom && <button className="classroom-link" onClick={onOpenClassroom} type="button">Classroom</button>}
+          <label className="lens-toggle">
+            <span>Teacher lens</span>
+            <input
+              checked={teacherLens}
+              onChange={(event) => onTeacherLensChange(event.target.checked)}
+              type="checkbox"
+            />
+            <span className="toggle-track" aria-hidden="true"><span /></span>
+          </label>
+        </div>
+      )}
     </header>
   )
 }
